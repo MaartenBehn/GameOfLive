@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
 )
 
 func main() {
 
-	fmt.Print("\033[H\033[2J") // Clears consol
+	Clear()
 	fmt.Println("Welcome to Conways Game of Live.")
 	fmt.Println("Please input the bord size:")
 
@@ -23,65 +25,73 @@ func main() {
 
 	PrintBord(bord, step)
 	for running {
-		var validInput bool
-		for !validInput {
-			fmt.Println("Enter keyword:")
-			var input string
-			fmt.Scan(&input)
+		fmt.Println("Enter keyword:")
+		var input string
+		fmt.Scan(&input)
 
-			if input == "exit" {
-				running = false
-				validInput = true
-			} else if input == "step" || input == "s" {
-				step++
-				UpdateBord(&bord)
-				PrintBord(bord, step)
-				validInput = true
-			} else if input == "set" {
-				PrintBord(bord, step)
+		if input == "exit" {
 
-				var x, y, arg0 int
-				fmt.Println("Enter x, y, value (0 = dead, 1 = alive):")
-				fmt.Scan(&x, &y, &arg0)
+			running = false
 
-				var value bool = true
-				if arg0 == 0 {
-					value = false
-				}
-				bord[y][x] = value
-				PrintBord(bord, step)
-				validInput = true
-			} else if input == "template" {
-				PrintBord(bord, step)
-				fmt.Print("Tmplates are: \n--------------------\n1 Flyer \n--------------------\nEnter number:")
+		} else if input == "help" {
 
-				var number int
-				fmt.Scan(&number)
-				switch number {
-				case 1:
-					if bordsize >= 3 {
-						bord[0][1] = true
-						bord[1][2] = true
-						bord[2][0] = true
-						bord[2][1] = true
-						bord[2][2] = true
-					}
-					break
-				}
+			PrintBord(bord, step)
+			fmt.Print("Keywords are: \nhelp      -> Shows this.\nstep      -> Updates Game by one step. (s also works)\nset       -> Set the value of a cell.\ntemplate  -> Place premade templates.\nexit      -> Stops programm.\n")
 
-				PrintBord(bord, step)
-			} else {
-				PrintBord(bord, step)
-				fmt.Print("No valid input! \nValid keywords are: step (s), set, template, exit \n")
+		} else if input == "step" || input == "s" {
+
+			step++
+			UpdateBord(&bord)
+			PrintBord(bord, step)
+
+		} else if input == "set" {
+
+			PrintBord(bord, step)
+
+			var x, y, arg0 int
+			fmt.Println("Enter x, y, value (0 = dead, 1 = alive):")
+			fmt.Scan(&x, &y, &arg0)
+
+			var value bool = true
+			if arg0 == 0 {
+				value = false
 			}
-		}
+			bord[y][x] = value
+			PrintBord(bord, step)
 
+		} else if input == "template" {
+
+			PrintBord(bord, step)
+			fmt.Print("Tmplates are: \n1 -> Flyer \nEnter number:\n")
+
+			var number int
+			fmt.Scan(&number)
+			switch number {
+			case 1:
+				if bordsize >= 3 {
+					bord[0][1] = true
+					bord[1][2] = true
+					bord[2][0] = true
+					bord[2][1] = true
+					bord[2][2] = true
+				}
+				break
+			}
+
+			PrintBord(bord, step)
+
+		} else {
+
+			PrintBord(bord, step)
+			fmt.Print("No valid input! \nValid keywords are: help, step (s), set, template, exit \n")
+
+		}
 	}
 }
 
 // PrintBord prints the bord to the consol using O for false and X for true
 func PrintBord(bord [][]bool, step int) {
-	fmt.Print("\033[H\033[2J") // Clears consol
+	Clear()
 
 	fmt.Printf("%s%d%s", "Conways Game of Live \nCurrent step: ", step, "\n--------------------\n") // Prints header
 
@@ -151,4 +161,11 @@ func GetActivNeigborCount(bord [][]bool, y int, x int) int {
 	}
 
 	return activeCount
+}
+
+// Clear clears the Consol
+func Clear() {
+	cmd := exec.Command("cmd", "/c", "cls")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }
