@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 func main() {
@@ -89,25 +90,42 @@ func main() {
 	}
 }
 
+func plus() (int, int) {
+	return 2, 4
+}
+
 // PrintBord prints the bord to the consol using O for false and X for true
 func PrintBord(bord [][]bool, step int) {
 	Clear()
 
-	fmt.Printf("%s%d%s", "Conways Game of Live \nCurrent step: ", step, "\n--------------------\n") // Prints header
+	fmt.Printf("%s%d%s", "Conways Game of Live \nCurrent step: ", step, "\n") // Prints header
 
 	// Prints bord
+
 	for _, collum := range bord {
+
+		fmt.Print("+")
+		for i := 0; i < len(collum); i++ {
+			fmt.Print(" — +")
+		}
+
+		fmt.Print("\n|")
 		for _, cell := range collum {
 			if cell {
-				fmt.Print("X")
+				fmt.Print(" O ")
 			} else {
-				fmt.Print("O")
+				fmt.Print("   ")
 			}
+			fmt.Print("|")
 		}
 		fmt.Print("\n")
 	}
 
-	fmt.Println("--------------------") // lower spertion line
+	fmt.Print("+")
+	for i := 0; i < len(bord[0]); i++ {
+		fmt.Print(" — +")
+	}
+	fmt.Print("\n")
 }
 
 // UpdateBord updates all cells
@@ -165,7 +183,14 @@ func GetActivNeigborCount(bord [][]bool, y int, x int) int {
 
 // Clear clears the Consol
 func Clear() {
-	cmd := exec.Command("cmd", "/c", "cls")
-	cmd.Stdout = os.Stdout
-	cmd.Run()
+
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	} else if runtime.GOOS == "linux" {
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
 }
