@@ -49,7 +49,7 @@ func main() {
 			PrintBord(bord, step)
 
 			var x, y, arg0 int
-			fmt.Println("Enter x, y, value (0 = dead, 1 = alive):")
+			fmt.Println("Enter <x> <y> <value> (0 = dead, 1 = alive):")
 			fmt.Scan(&x, &y, &arg0)
 
 			var value bool = true
