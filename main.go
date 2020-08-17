@@ -11,49 +11,68 @@ func main() {
 	fmt.Println("Please input the bord size:")
 
 	var bordsize int = 10
-	//fmt.Scan(&bordsize)
+	fmt.Scan(&bordsize)
 
 	bord := make([][]bool, bordsize)
 	for i := range bord {
 		bord[i] = make([]bool, bordsize)
 	}
 
-	bord[3][3] = true
-	bord[4][4] = true
-	bord[5][2] = true
-	bord[5][3] = true
-	bord[5][4] = true
-
 	var running bool = true
 	var step int
-	for running {
-		PrintBord(bord, step)
 
+	PrintBord(bord, step)
+	for running {
 		var validInput bool
 		for !validInput {
 			fmt.Println("Enter keyword:")
 			var input string
 			fmt.Scan(&input)
 
-			switch input {
-			case "exit":
+			if input == "exit" {
 				running = false
 				validInput = true
-				break
-			case "step":
+			} else if input == "step" || input == "s" {
 				step++
 				UpdateBord(&bord)
-				validInput = true
-				break
-			case "s":
-				step++
-				UpdateBord(&bord)
-				validInput = true
-				break
-			default:
 				PrintBord(bord, step)
-				fmt.Print("No valid input! \nValid keywords are: step (s), exit \n")
-				break
+				validInput = true
+			} else if input == "set" {
+				PrintBord(bord, step)
+
+				var x, y, arg0 int
+				fmt.Println("Enter x, y, value (0 = dead, 1 = alive):")
+				fmt.Scan(&x, &y, &arg0)
+
+				var value bool = true
+				if arg0 == 0 {
+					value = false
+				}
+				bord[y][x] = value
+				PrintBord(bord, step)
+				validInput = true
+			} else if input == "template" {
+				PrintBord(bord, step)
+				fmt.Print("Tmplates are: \n--------------------\n1 Flyer \n--------------------\nEnter number:")
+
+				var number int
+				fmt.Scan(&number)
+				switch number {
+				case 1:
+					if bordsize >= 3 {
+						bord[0][1] = true
+						bord[1][2] = true
+						bord[2][0] = true
+						bord[2][1] = true
+						bord[2][2] = true
+					}
+					break
+				}
+
+				PrintBord(bord, step)
+			} else {
+				PrintBord(bord, step)
+				fmt.Print("No valid input! \nValid keywords are: step (s), set, template, exit \n")
 			}
 		}
 
